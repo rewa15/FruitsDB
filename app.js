@@ -4,17 +4,19 @@ mongoose.connect('mongodb://localhost:27017/fruitsDB', {useNewUrlParser: true, u
 
 
 const fruitSchema = new mongoose.Schema({
-	name: {
+
+name: {
     type: String,
     reqired: true
-  }
-	rating: {
+  },
+  
+ rating: {
     type: Number,
     min: 0,
     max: 10
-  }
+  },
+                                       
 	review: String
-  
 });
 
 const Fruit = mongoose.model('Fruit', fruitSchema);
