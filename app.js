@@ -1,72 +1,48 @@
-const MongoClient = require('mongodb').MongoClient;
-const assert = require('assert');
+const mongoose = require('mongoose');
 
-// Connection URL
-const url = 'mongodb://localhost:27017';
+mongoose.connect('mongodb://localhost:27017/fruitsDB', {useNewUrlParser: true, useUnifiedTopology: true});
 
-// Database Name
-const dbName = 'fruitsDB';
 
-const client = new MongoClient(url);
-// Use connect method to connect to the server
-client.connect(function(err) {
-  assert.equal(null, err);
-  console.log("Connected correctly to server");
+const fruitSchema = new mongoose.Schema({
+	name: String,
+	rating: Number,
+	review: String
+});
 
-  const db = client.db(dbName);
-    findDocuments(db, function() {
-      client.close();
+const Fruit = mongoose.model('Fruit', fruitSchema);
 
-    });
-  });
-
-const insertDocuments = function(db, callback) {
-  
-  // Get the documents collection
-  const collection = db.collection('fruits');
-  // Insert some documents
-  collection.insertMany([
-    {
-
-     name : "apple",
-     score: 8,
+const apple=new Fruit({
+	 name : "apple",
+     rating: 8,
      review: "Great Fruit"
+});
 
-    },
+const kiwi=new Fruit({
+	 name : "Kiwi",
+     rating: 10,
+     review: "Awesome fruit"
+});
 
-    {
-       
-     name : "orange",
-     score: 7,
-     review: "Kinda sour"
+const orange=new Fruit({
+	 name : "Orange",
+     rating: 7,
+     review: "Sour fruit"
+});
 
-    }, 
+const banana=new Fruit({
+	 name : "Banana",
+     rating: 5,
+     review: "Weird Texture"
+});
 
-    {
+var arr=[apple,kiwi,orange,banana];
 
-      name : "Banana",
-      score: 9,
-      review: "Awesome fruit"
+Fruit.insertMany(arr, function(error, docs) {});
 
-    }
-  ], function(err, result) {
-    assert.equal(err, null);
-    assert.equal(3, result.result.n);
-    assert.equal(3, result.ops.length);
-    console.log("Inserted 3 documents into the collection");
-    callback(result);
-  });
-
-}
-
-const findDocuments = function(db, callback) {
-  // Get the documents collection
-  const collection = db.collection('fruits');
-  // Find some documents
-  collection.find({}).toArray(function(err, fruits) {
-    assert.equal(err, null);
-    console.log("Found the following records");
-    console.log(fruits)
-    callback(fruits);
-  });
-}
+Fruit.find(function(err, fruits)
+{
+   if(err)
+   	console.log(err);
+   else
+   	console.log(fruits);
+});
